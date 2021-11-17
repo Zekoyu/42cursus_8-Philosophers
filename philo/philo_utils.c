@@ -6,7 +6,7 @@
 /*   By: mframbou <mframbou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/15 18:29:35 by mframbou          #+#    #+#             */
-/*   Updated: 2021/11/17 14:54:09 by mframbou         ###   ########.fr       */
+/*   Updated: 2021/11/17 16:03:24 by mframbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	unlock_forks(t_philosopher *philo)
 	pthread_mutex_unlock(&philo->fork);
 	if (philo->next != philo)
 		pthread_mutex_unlock(&philo->next->fork);
+	philo->fork_available = 1;
+	philo->next->fork_available = 1;
 }
 
 int	philo_ate_enough(t_philosopher *philo)
@@ -41,14 +43,12 @@ int	lock_forks(t_philosopher *philo)
 {
 	long	ms_since_start;
 
+	philo->fork_available = 0;
+	philo->next->fork_available = 0;
 	if (philo->next != philo)
 	{
 		pthread_mutex_lock(&philo->fork);
-		pthread_mutex_unlock(&philo->fork);
 		pthread_mutex_lock(&philo->next->fork);
-		pthread_mutex_unlock(&philo->next->fork);
-		pthread_mutex_lock(&philo->next->fork);
-		pthread_mutex_lock(&philo->fork);
 		ms_since_start = get_ms_since_start();
 		printf("%ld %d has taken a fork\n%ld %d has taken a fork\n", \
 		ms_since_start, philo->number, ms_since_start, philo->number);

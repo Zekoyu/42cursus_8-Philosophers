@@ -6,7 +6,7 @@
 /*   By: mframbou <mframbou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 17:31:24 by mframbou          #+#    #+#             */
-/*   Updated: 2021/11/16 14:21:56 by mframbou         ###   ########.fr       */
+/*   Updated: 2021/11/17 15:52:06 by mframbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_philosopher	*create_philo(t_timings *timings, int number, char *philo_died)
 	{
 		pthread_mutex_init(&philo->fork, NULL);
 		philo->last_meal_end = 0;
+		philo->fork_available = 1;
 		philo->someone_died = philo_died;
 		philo->number = number;
 		philo->timings = timings;

@@ -6,7 +6,7 @@
 /*   By: mframbou <mframbou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 16:17:34 by mframbou          #+#    #+#             */
-/*   Updated: 2021/11/16 14:21:35 by mframbou         ###   ########.fr       */
+/*   Updated: 2021/11/17 15:51:01 by mframbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct s_philosopher
 {
 	pthread_t				self;
 	pthread_mutex_t			fork;
+	char					fork_available;
 	int						number;
 	long					last_meal_end;
 	int						times_ate;
@@ -63,6 +64,7 @@ void			unlock_forks(t_philosopher *philo);
 int				philo_ate_enough(t_philosopher *philo);
 int				philo_should_be_dead(t_philosopher *philo);
 int				check_death(t_philosopher *philo, long current_ms);
+int				forks_are_available(t_philosopher *philo);
 
 // Philo actions
 int				philo_eat(t_philosopher *philo);

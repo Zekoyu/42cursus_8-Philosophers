@@ -6,7 +6,7 @@
 /*   By: mframbou <mframbou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 13:41:09 by mframbou          #+#    #+#             */
-/*   Updated: 2021/11/16 14:39:42 by mframbou         ###   ########.fr       */
+/*   Updated: 2021/11/17 16:07:13 by mframbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,5 +85,6 @@ void	start_philos(t_philosopher *philos)
 		pthread_create(&philo_thread, NULL, &philo_main, current);
 		current->self = philo_thread;
 		current = current->next;
+		usleep(25);
 	}
 }

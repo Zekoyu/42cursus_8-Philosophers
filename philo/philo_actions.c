@@ -6,11 +6,21 @@
 /*   By: mframbou <mframbou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/15 18:40:41 by mframbou          #+#    #+#             */
-/*   Updated: 2021/11/17 14:58:00 by mframbou         ###   ########.fr       */
+/*   Updated: 2021/11/17 16:50:21 by mframbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	wait_for_forks(t_philosopher *philo)
+{
+	while (!forks_are_available(philo))
+	{
+		if (!check_death(philo, get_ms_since_start()))
+			return ;
+		usleep(100);
+	}
+}
 
 // Init the first meal at -(time to eat), so that first eat will be set at 0
 // and so on (last meal time is set to the time he began to eat)
@@ -18,6 +28,7 @@ int	philo_eat(t_philosopher *philo)
 {
 	long	current_ms;
 
+	wait_for_forks(philo);
 	if (!lock_forks(philo))
 		while (get_ms_since_start() <= philo->timings->time_to_die)
 			usleep(50);
@@ -25,10 +36,9 @@ int	philo_eat(t_philosopher *philo)
 	if (!check_death(philo, current_ms))
 		return (-1);
 	printf("%ld %d is eating\n", current_ms, philo->number);
+	philo->last_meal_end += philo->timings->time_to_eat;
 	if (philo->times_ate == 0)
 		philo->last_meal_end = current_ms + philo->timings->time_to_eat;
-	else
-		philo->last_meal_end += philo->timings->time_to_eat;
 	philo->times_ate++;
 	while (current_ms < philo->last_meal_end)
 	{
