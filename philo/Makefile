@@ -31,7 +31,7 @@ clean:
 	@echo "\033[0;91mRemoving \033[0;31m$(OBJS)"
 
 fclean:		clean
-	rm -f client server
+	rm -f $(NAME)
 
 re:			fclean all
 
