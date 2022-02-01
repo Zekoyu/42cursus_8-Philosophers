@@ -6,7 +6,7 @@
 /*   By:             )/   )   )  /  /    (  |   )/   )   ) /   )(   )(    )   */
 /*                  '/   /   (`.'  /      `-'-''/   /   (.'`--'`-`-'  `--':   */
 /*   Created: 01-02-2022  by  `-'                        `-'                  */
-/*   Updated: 01-02-2022 18:22 by                                             */
+/*   Updated: 01-02-2022 21:10 by                                             */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@ static void	lock_forks(t_philosopher *philo)
 {
 	sem_wait(philo->can_lock);
 	sem_wait(philo->forks);
+	printf("%ld %d has taken a fork\n", get_ms_since_start(), philo->number);
 	sem_wait(philo->forks);
+	printf("%ld %d has taken a fork\n", get_ms_since_start(), philo->number);
 	sem_post(philo->can_lock);
 }
 
