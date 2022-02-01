@@ -6,11 +6,11 @@
 /*   By: mframbou <mframbou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/16 13:41:09 by mframbou          #+#    #+#             */
-/*   Updated: 2021/11/17 17:57:42 by mframbou         ###   ########.fr       */
+/*   Updated: 01-02-2022 16:47 by                                             */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 void	*free_philos(t_philosopher *first)
 {
@@ -63,11 +63,13 @@ void	*philo_main(void *arg)
 	while (1)
 	{
 		if (philo_eat(self) == -1)
-			return (NULL);
+			exit (EXIT_FAILURE);
+		if (philo_ate_enough(self))
+			exit (EXIT_SUCCESS);
 		if (philo_sleep(self) == -1)
-			return (NULL);
+			exit (EXIT_FAILURE);
 		if (philo_think(self) == -1)
-			return (NULL);
+			exit (EXIT_FAILURE);
 	}
 }
 
