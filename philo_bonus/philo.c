@@ -6,7 +6,7 @@
 /*   By: mframbou <mframbou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 16:56:11 by mframbou          #+#    #+#             */
-/*   Updated: 01-02-2022 18:08 by                                             */
+/*   Updated: 03-02-2022 16:13 by                                             */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,42 @@ sem_t	*create_sem(char *name, int value)
 				ft_putstr_fd("Couln't create ", STDERR_FILENO);
 				ft_putstr_fd(name, STDERR_FILENO);
 				ft_putstr_fd(" semaphore, another one was opened, then unlinked \
-				but new one cannot be created.\n" , STDERR_FILENO);
+				but new one cannot be created.\n", STDERR_FILENO);
 				return (NULL);
 			}
 		}
 	}
 	return (sem);
+}
+
+static int	start_and_wait_philos(int philos_count, sem_t *sem_wants_to_lock, \
+									sem_t *sem_forks, t_timings timings)
+{
+	pid_t	*pids;
+	int		return_val;
+	int		i;
+
+	init_ms_since_start();
+	pids = create_philos(philos_count, sem_wants_to_lock, sem_forks, timings);
+	if (!pids)
+		ft_putstr_fd("Couldn't malloc or start the philos", STDERR_FILENO);
+	if (!pids)
+		return (EXIT_FAILURE);
+	while (philos_count > 0)
+	{
+		return_val = 0;
+		waitpid(-1, &return_val, 0);
+		if (WIFEXITED(return_val) && WEXITSTATUS(return_val) == EXIT_FAILURE)
+		{
+			i = -1;
+			while (pids[++i] != -1)
+				kill(pids[i], SIGTERM);
+			free(pids);
+			return (EXIT_FAILURE);
+		}
+		philos_count--;
+	}
+	return (EXIT_SUCCESS);
 }
 
 /*
@@ -111,21 +141,6 @@ int	main(int argc, char *argv[])
 		sem_unlink(SEM_FORKS);
 		sem_unlink(SEM_CANLOCK);
 	}
-
-	pid_t *pids;
-
-	init_ms_since_start();
-	pids = create_philos(philos_count, sem_wants_to_lock, sem_forks, timings);
-	while (philos_count > 0)
-	{
-		int return_val = 0;
-		waitpid(-1, &return_val, 0);
-		if (WIFEXITED(return_val) && WEXITSTATUS(return_val) == EXIT_FAILURE)
-		{
-			for (int i = 0; pids[i] != -1; i++)
-				kill(pids[i], SIGTERM);
-			return (EXIT_FAILURE);
-		}
-	}
-	return (EXIT_SUCCESS);
+	return (start_and_wait_philos(philos_count, sem_wants_to_lock, sem_forks, \
+									timings));
 }
